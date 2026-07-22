@@ -5,12 +5,8 @@ node_modules/
 dist/
 .vite/
 
-# local model assets (copyrighted / large — keep locally)
-Nahida_R18_MDJSN_edit_v1.1/
-Nahida_unity/
-
-# debug screenshots
-preview-*.png
+# debug screenshots / samples
+debug/
 
 # env / editor
 .env

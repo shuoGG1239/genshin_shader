@@ -1,27 +1,25 @@
+import './styles.css';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
 import { MMDLoader } from 'three/addons/loaders/MMDLoader.js';
 import { OutlineEffect } from 'three/addons/effects/OutlineEffect.js';
+import { PATHS, getModelMode } from './config.js';
 import {
   applyOfficialMaterials,
   createSharedOfficialUniforms,
-} from './genshinOfficialMaterial.js';
+} from './materials/officialMaterial.js';
 import {
   applyGenshinMaterials,
   createSharedToonUniforms,
-} from './genshinToonMaterial.js';
-import { loadNahidaTextures } from './nahidaAssets.js';
+} from './materials/toonMaterial.js';
+import { loadNahidaTextures } from './assets/nahidaTextures.js';
 import {
   createPartVisibility,
   mountPartVisibilityUI,
-} from './partVisibility.js';
+} from './ui/partVisibility.js';
 
-const PMX_URL = '/Nahida_R18_MDJSN_edit_v1.1/Nahida_R18_v1.1.pmx';
-const FBX_URL = '/Nahida_unity/Nahida/Nahida.fbx';
-
-const params = new URLSearchParams(location.search);
-const mode = params.get('model') === 'fbx' ? 'fbx' : 'pmx';
+const mode = getModelMode();
 
 const statusEl = document.getElementById('status');
 const setStatus = (text, isError = false) => {
@@ -169,7 +167,7 @@ function normalizeAndFrame(root) {
 async function bootPmx() {
   setStatus('加载 PMX…');
   const mesh = await new Promise((resolve, reject) => {
-    new MMDLoader().load(PMX_URL, resolve, undefined, reject);
+    new MMDLoader().load(PATHS.pmx, resolve, undefined, reject);
   });
   normalizeAndFrame(mesh);
   const created = applyGenshinMaterials(mesh, sharedToon);
@@ -182,14 +180,14 @@ async function bootPmx() {
   const panel = document.getElementById('partPanel');
   if (panel) mountPartVisibilityUI(panel, partVis);
 
-  setStatus(`PMX 卡通着色 · ${created.length} mats（显示正常）`);
+  setStatus(`PMX 卡通着色 · ${created.length} mats`);
 }
 
 async function bootFbx() {
   setStatus('打包贴图并加载 FBX…');
   const textures = await loadNahidaTextures();
   const fbx = await new Promise((resolve, reject) => {
-    new FBXLoader().load(FBX_URL, resolve, undefined, reject);
+    new FBXLoader().load(PATHS.fbx, resolve, undefined, reject);
   });
   normalizeAndFrame(fbx);
   const created = applyOfficialMaterials(fbx, textures, sharedOfficial);
@@ -203,7 +201,7 @@ async function bootFbx() {
   if (panel) mountPartVisibilityUI(panel, partVis);
 
   setStatus(
-    `FBX 实验中 · ${created.length} mats · 此资源 Body/Body_UV1 UV 分裂，贴图尚未完全对齐`,
+    `FBX 实验中 · ${created.length} mats · Body/Body_UV1 UV 尚未完全对齐`,
   );
 }
 

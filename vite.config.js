@@ -6,7 +6,6 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     open: true,
-    fs: { allow: ['.'] },
   },
   assetsInclude: ['**/*.pmx', '**/*.pmd', '**/*.vmd', '**/*.bmp', '**/*.fbx', '**/*.dae'],
 });

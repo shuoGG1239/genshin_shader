@@ -1,5 +1,5 @@
 Add-Type -AssemblyName System.Drawing
-$base = 'C:\Users\Administrator\Desktop\genshin_shader\Nahida_unity\Nahida'
+$base = 'C:\Users\Administrator\Desktop\genshin_shader\public\models\fbx\Nahida'
 $f = 'Avatar_Loli_Catalyst_Nahida_Tex_Body_Diffuse_A.png'
 $img = [System.Drawing.Bitmap]::FromFile((Join-Path $base $f))
 $hist = New-Object int[] 16
